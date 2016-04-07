@@ -15,7 +15,8 @@ vec3 map(float value) {
 }
 
 void main(void) {
-  vec3 diffuse = clamp(map(dot(normalize(vNormal), normalize(cameraPosition - vPosition))), 0.0, 1.0);
+  float angle = dot(normalize(vNormal), normalize(cameraPosition - vPosition));
+  vec3 diffuseColor = clamp(map(angle), 0.0, 1.0);
 
-  gl_FragColor = vec4(diffuse, 1.0);
+  gl_FragColor = vec4(diffuseColor, 1.0);
 }
