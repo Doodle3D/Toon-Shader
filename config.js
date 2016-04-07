@@ -12,19 +12,54 @@ System.config({
     "github:*": "jspm_packages/github/*",
     "npm:*": "jspm_packages/npm/*"
   },
+
   meta: {
     "mrdoob/three.js/controls/EditorControls": {
       "deps": [
         "mrdoob/three.js"
       ]
+    },
+    "mrdoob/three.js/postprocessing/ShaderPass": {
+      "deps": [
+        "mrdoob/three.js"
+      ]
+    },
+    "mrdoob/three.js/postprocessing/RenderPass": {
+      "deps": [
+        "mrdoob/three.js"
+      ]
+    },
+    "mrdoob/three.js/postprocessing/EffectComposer": {
+      "deps": [
+        "mrdoob/three.js",
+        "mrdoob/three.js/postprocessing/ShaderPass",
+        "mrdoob/three.js/postprocessing/MaskPass",
+        "mrdoob/three.js/shaders/CopyShader"
+      ]
+    },
+    "mrdoob/three.js/shaders/CopyShader": {
+      "deps": [
+        "mrdoob/three.js"
+      ]
+    },
+    "mrdoob/three.js/postprocessing/MaskPass": {
+      "deps": [
+        "mrdoob/three.js"
+      ]
     }
   },
+
   map: {
     "babel": "npm:babel-core@5.8.38",
     "babel-runtime": "npm:babel-runtime@5.8.38",
     "core-js": "npm:core-js@1.2.6",
     "mrdoob/three.js": "github:mrdoob/three.js@master",
     "mrdoob/three.js/controls/EditorControls": "github:mrdoob/three.js@master/examples/js/controls/EditorControls.js",
+    "mrdoob/three.js/postprocessing/EffectComposer": "github:mrdoob/three.js@master/examples/js/postprocessing/EffectComposer.js",
+    "mrdoob/three.js/postprocessing/MaskPass": "github:mrdoob/three.js@master/examples/js/postprocessing/MaskPass.js",
+    "mrdoob/three.js/postprocessing/RenderPass": "github:mrdoob/three.js@master/examples/js/postprocessing/RenderPass.js",
+    "mrdoob/three.js/postprocessing/ShaderPass": "github:mrdoob/three.js@master/examples/js/postprocessing/ShaderPass.js",
+    "mrdoob/three.js/shaders/CopyShader": "github:mrdoob/three.js@master/examples/js/shaders/CopyShader.js",
     "text": "github:systemjs/plugin-text@0.0.7",
     "github:jspm/nodelibs-assert@0.1.0": {
       "assert": "npm:assert@1.3.0"
