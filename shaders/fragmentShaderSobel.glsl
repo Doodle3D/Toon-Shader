@@ -22,5 +22,5 @@ void main() {
     vec4 sobel_vertEdge  = n[0] + (2.0*n[1]) + n[2] - (n[6] + (2.0*n[7]) + n[8]);
     vec3 sobel = sqrt((sobel_horizEdge.rgb * sobel_horizEdge.rgb) + (sobel_vertEdge.rgb * sobel_vertEdge.rgb));
 
-    gl_FragColor = (length(sobel) > threshold) ? vec4(1.0) : vec4(0.0);
+    gl_FragColor = (length(sobel) > threshold) ? vec4(vec3(1.0), 0.0) : vec4(0.0);
 }

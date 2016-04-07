@@ -6,5 +6,5 @@ void main() {
   vec4 colorDiffuse = texture2D(tDiffuse, vUv);
   vec4 colorAdd = texture2D(tSubtract, vUv);
 
-  gl_FragColor = colorDiffuse - colorAdd;
+  gl_FragColor = clamp(colorDiffuse - colorAdd, 0.0, 1.0);
 }
