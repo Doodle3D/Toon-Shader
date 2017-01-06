@@ -1,16 +1,17 @@
 {
   "jspm": {
+    "name": "toon-shader",
+    "main": "index.js",
     "dependencies": {
-      "mrdoob/three.js": "github:mrdoob/three.js@master",
-      "text": "github:systemjs/plugin-text@^0.0.7"
+      "mrdoob/three.js": "github:mrdoob/three.js@r83",
+      "text": "github:systemjs/plugin-text@^0.0.9",
+      "three.js": "github:mrdoob/three.js@r83"
     },
     "devDependencies": {
-      "babel": "npm:babel-core@^5.8.24",
-      "babel-runtime": "npm:babel-runtime@^5.8.24",
-      "core-js": "npm:core-js@^1.1.4"
+      "plugin-babel": "npm:systemjs-plugin-babel@^0.0.18"
     },
     "overrides": {
-      "github:mrdoob/three.js@master": {
+      "github:mrdoob/three.js@r83": {
         "format": "global"
       }
     }

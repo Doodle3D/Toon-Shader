@@ -3,6 +3,7 @@ import 'mrdoob/three.js/controls/EditorControls';
 import 'mrdoob/three.js/postprocessing/RenderPass';
 import 'mrdoob/three.js/postprocessing/ShaderPass';
 import 'mrdoob/three.js/postprocessing/EffectComposer';
+import 'mrdoob/three.js/shaders/CopyShader';
 import vertexShaderCell from './shaders/vertexShaderCell.glsl!text';
 import fragmentShaderCell from './shaders/fragmentShaderCell.glsl!text';
 import vertexShaderPostprocessing from './shaders/vertexShaderPostprocessing.glsl!text';
@@ -69,6 +70,7 @@ const sobelShader = new THREE.ShaderPass({
 
 // add shader to composer outline
 composerOutline.addPass(sobelShader);
+composerOutline.addPass(new THREE.ShaderPass(THREE.CopyShader));
 
 // create new composer and render scene (with cell shaders)
 const composer = new THREE.EffectComposer(renderer);
