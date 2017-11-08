@@ -1,18 +1,21 @@
-import 'mrdoob/three.js';
-import 'mrdoob/three.js/controls/EditorControls';
-import 'mrdoob/three.js/postprocessing/RenderPass';
-import 'mrdoob/three.js/postprocessing/ShaderPass';
-import 'mrdoob/three.js/postprocessing/EffectComposer';
-import 'mrdoob/three.js/shaders/CopyShader';
-import vertexShaderCell from './shaders/vertexShaderCell.glsl!text';
-import fragmentShaderCell from './shaders/fragmentShaderCell.glsl!text';
-import vertexShaderPostprocessing from './shaders/vertexShaderPostprocessing.glsl!text';
-import fragmentShaderSobel from './shaders/fragmentShaderSobel.glsl!text';
-import fragmentShaderSubtractive from './shaders/fragmentShaderSubtractive.glsl!text';
+import * as THREE from 'three';
+import 'three/examples/js/controls/EditorControls';
+import 'three/examples/js/postprocessing/EffectComposer.js';
+import 'three/examples/js/postprocessing/RenderPass.js';
+import 'three/examples/js/postprocessing/ShaderPass.js';
+import 'three/examples/js/shaders/CopyShader.js';
+import vertexShaderCell from 'src/shaders/vertexShaderCell.glsl';
+import fragmentShaderCell from 'src/shaders/fragmentShaderCell.glsl';
+import vertexShaderPostprocessing from 'src/shaders/vertexShaderPostprocessing.glsl';
+import fragmentShaderSobel from 'src/shaders/fragmentShaderSobel.glsl';
+import fragmentShaderSubtractive from 'src/shaders/fragmentShaderSubtractive.glsl';
+
+const WIDTH = 720;
+const HEIGHT = 480;
 
 const scene = new THREE.Scene();
 
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 10000);
+const camera = new THREE.PerspectiveCamera(75, WIDTH / HEIGHT, 1, 10000);
 camera.position.z = 100;
 camera.lookAt(new THREE.Vector3(0, 0, 0));
 
@@ -37,11 +40,11 @@ scene.add(mesh);
 // creater renderer
 const renderer = new THREE.WebGLRenderer();
 renderer.setClearColor(0xffffff, 1.0);
-renderer.setSize(window.innerWidth, window.innerHeight);
-document.body.appendChild(renderer.domElement);
+renderer.setSize(WIDTH, HEIGHT);
+document.getElementById('app').appendChild(renderer.domElement);
 
 // create render target for the outline
-const renderTargetOutline = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight, {
+const renderTargetOutline = new THREE.WebGLRenderTarget(WIDTH, HEIGHT, {
   minFilter: THREE.LinearFilter,
   magFilter: THREE.LinearFilter,
   format: THREE.RGBAFormat,
@@ -62,7 +65,7 @@ const sobelShader = new THREE.ShaderPass({
     tDiffuse: { type: 't' },
     threshold: { type: 'f', value: 0.99 },
     size: { type: 'f', value: 7.0 },
-    aspect: { type: 'v2', value: new THREE.Vector2(window.innerWidth, window.innerHeight) }
+    aspect: { type: 'v2', value: new THREE.Vector2(WIDTH, HEIGHT) }
   },
   vertexShader: vertexShaderPostprocessing,
   fragmentShader: fragmentShaderSobel
