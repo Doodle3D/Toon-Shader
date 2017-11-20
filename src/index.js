@@ -34,7 +34,7 @@ const geometry = new THREE.TorusKnotGeometry(10, 3, 100, 16);
 // const geometry = new THREE.TorusGeometry(10, 3, 16, 100);
 // const geometry = new THREE.BoxGeometry(20, 20, 20);
 
-// create mesh with material and add to scene
+// create mesh with material (material is not used) and add to scene
 const mesh = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial());
 scene.add(mesh);
 
