@@ -32,8 +32,16 @@ module.exports = {
         test: /three\/examples\/.+\.js/,
         use: 'imports-loader?THREE=three'
       }, {
-				test: /\.glsl$/,
+        test: /\.glsl$/,
         use: 'raw-loader'
+      }, {
+        test: /\.(png|jpg|gif)$/,
+        use: {
+          loader: 'file-loader',
+          options: {
+            name: '[path][name].[ext]'
+          }
+        }
       }
     ]
   },

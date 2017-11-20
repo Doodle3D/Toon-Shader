@@ -4,7 +4,9 @@
   "description": "Toon Shader with THREE.JS",
   "main": "src/index.js",
   "dependencies": {
-    "three": "^0.83.0"
+    "file-loader": "^1.1.5",
+    "three": "^0.88.0",
+    "webpack-dev-server": "^2.9.4"
   },
   "devDependencies": {
     "serve": "^6.4.1",
@@ -20,7 +22,7 @@
   },
   "scripts": {
     "dist": "NODE_ENV=production webpack -p",
-    "start": "serve dist & webpack -w",
+    "start": "webpack-dev-server -w",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

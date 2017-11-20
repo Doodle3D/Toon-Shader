@@ -4,101 +4,75 @@ import 'three/examples/js/postprocessing/EffectComposer.js';
 import 'three/examples/js/postprocessing/RenderPass.js';
 import 'three/examples/js/postprocessing/ShaderPass.js';
 import 'three/examples/js/shaders/CopyShader.js';
-import vertexShaderCell from 'src/shaders/vertexShaderCell.glsl';
-import fragmentShaderCell from 'src/shaders/fragmentShaderCell.glsl';
-import vertexShaderPostprocessing from 'src/shaders/vertexShaderPostprocessing.glsl';
-import fragmentShaderSobel from 'src/shaders/fragmentShaderSobel.glsl';
-import fragmentShaderSubtractive from 'src/shaders/fragmentShaderSubtractive.glsl';
+import normalDepthFrag from 'src/shaders/normal_depth_frag.glsl';
+import normalDepthVert from 'src/shaders/normal_depth_vert.glsl';
+import edgeFrag from 'src/shaders/edge_frag.glsl';
+import edgeVert from 'src/shaders/edge_vert.glsl';
+import matcapURL from 'src/texture/matcap1.png';
 
-const WIDTH = 720;
-const HEIGHT = 480;
+document.body.style.margin = 0;
+document.body.style.padding = 0;
+document.body.style.height = '100%';
+document.documentElement.style.height = '100%';
+document.documentElement.style.overflow = 'hidden';
 
-const scene = new THREE.Scene();
+document.getElementById('app').style.height = '100%';
 
-const camera = new THREE.PerspectiveCamera(75, WIDTH / HEIGHT, 1, 10000);
-camera.position.z = 100;
-camera.lookAt(new THREE.Vector3(0, 0, 0));
+const WIDTH = window.innerWidth;
+const HEIGHT = window.innerHeight;
 
-// create gemeometry (test with different geometries)
-const geometry = new THREE.TorusKnotGeometry(10, 3, 100, 16);
-// const geometry = new THREE.TorusGeometry(10, 3, 16, 100);
-// const geometry = new THREE.BoxGeometry(20, 20, 20);
+new THREE.TextureLoader().load(matcapURL, matcap => {
+  const scene = new THREE.Scene();
 
-// create cell shader
-const materialCell = new THREE.ShaderMaterial({
-  uniforms: {
-    color: { type: 'v3', value: new THREE.Vector3(0.0, 0.86, 1.0) }
-  },
-  vertexShader: vertexShaderCell,
-  fragmentShader: fragmentShaderCell
+  // const camera = new THREE.OrthographicCamera(WIDTH * 0.1 / -2, WIDTH * 0.1 / 2, HEIGHT * 0.1 / 2, HEIGHT * 0.1 / -2, 10, 1000);
+  const camera = new THREE.PerspectiveCamera(75, WIDTH / HEIGHT, .1, 1000);
+  camera.position.z = 100;
+  camera.lookAt(new THREE.Vector3(0, 0, 0));
+
+  // create gemeometry (test with different geometries)
+  const geometry = new THREE.TorusKnotGeometry(10, 3, 100, 16);
+  // const geometry = new THREE.SphereGeometry(10, 32, 32);
+  // const geometry = new THREE.TorusGeometry(10, 3, 16, 100);
+  // const geometry = new THREE.BoxGeometry(20, 20, 20);
+
+  // create mesh with material and add to scene
+  const mesh = new THREE.Mesh(geometry);
+  scene.add(mesh);
+
+  // creater renderer
+  const renderer = new THREE.WebGLRenderer({ alpha: true, logarithmicDepthBuffer: true, antialias: true });
+  renderer.setClearColor(0xffffff, 0.0);
+  renderer.setSize(WIDTH, HEIGHT);
+  document.getElementById('app').appendChild(renderer.domElement);
+
+  const composer = new THREE.EffectComposer(renderer);
+  const normalDepthPass = new THREE.RenderPass(scene, camera, new THREE.ShaderMaterial({
+    vertexShader: normalDepthVert,
+    fragmentShader: normalDepthFrag,
+    side: THREE.DoubleSide
+  }));
+  // normalDepthPass.renderToScreen = true;
+  composer.addPass(normalDepthPass);
+
+  const edgePass = new THREE.ShaderPass({
+    uniforms: {
+      "tDiffuse": { value: null },
+      "tMatcap": { type: 't', value: null },
+      "resolution": { type: 'v2', value: new THREE.Vector2(WIDTH, HEIGHT) }
+    },
+    vertexShader: edgeVert,
+    fragmentShader: edgeFrag
+  });
+  edgePass.uniforms.tMatcap.value = matcap
+  edgePass.renderToScreen = true;
+  composer.addPass(edgePass);
+
+  const editorControls = new THREE.EditorControls(camera, renderer.domElement);
+  editorControls.addEventListener('change', render);
+
+  function render() {
+    // render both outline and cell
+    composer.render();
+  }
+  render();
 });
-
-// create mesh with material and add to scene
-const mesh = new THREE.Mesh(geometry, materialCell);
-scene.add(mesh);
-
-// creater renderer
-const renderer = new THREE.WebGLRenderer();
-renderer.setClearColor(0xffffff, 1.0);
-renderer.setSize(WIDTH, HEIGHT);
-document.getElementById('app').appendChild(renderer.domElement);
-
-// create render target for the outline
-const renderTargetOutline = new THREE.WebGLRenderTarget(WIDTH, HEIGHT, {
-  minFilter: THREE.LinearFilter,
-  magFilter: THREE.LinearFilter,
-  format: THREE.RGBAFormat,
-  stencilBuffer: false
-});
-
-// create composer for the outline
-// output of the composer will be rendered to rounder target outline
-const composerOutline = new THREE.EffectComposer(renderer, renderTargetOutline);
-
-// add render pass to composer and override materials with normalMaterial
-composerOutline.addPass(new THREE.RenderPass(scene, camera, new THREE.MeshNormalMaterial()));
-
-// create sobel shader (outline detection shader)
-// pass previous rendered screen with tDiffuse
-const sobelShader = new THREE.ShaderPass({
-  uniforms: {
-    tDiffuse: { type: 't' },
-    threshold: { type: 'f', value: 0.99 },
-    size: { type: 'f', value: 7.0 },
-    aspect: { type: 'v2', value: new THREE.Vector2(WIDTH, HEIGHT) }
-  },
-  vertexShader: vertexShaderPostprocessing,
-  fragmentShader: fragmentShaderSobel
-});
-
-// add shader to composer outline
-composerOutline.addPass(sobelShader);
-composerOutline.addPass(new THREE.ShaderPass(THREE.CopyShader));
-
-// create new composer and render scene (with cell shaders)
-const composer = new THREE.EffectComposer(renderer);
-composer.addPass(new THREE.RenderPass(scene, camera));
-
-// combine outline and cell
-// cell is previous rendered screen (tDiffuse)
-// outline is renderTargetOutline
-const combineComposers = new THREE.ShaderPass({
-  uniforms: {
-    tDiffuse: { type: 't' },
-    tSubtract: { type: 't', value: renderTargetOutline }
-  },
-  vertexShader: vertexShaderPostprocessing,
-  fragmentShader: fragmentShaderSubtractive,
-});
-combineComposers.renderToScreen = true;
-composer.addPass(combineComposers);
-
-const editorControls = new THREE.EditorControls(camera, renderer.domElement);
-editorControls.addEventListener('change', render);
-
-function render() {
-  // render both outline and cell
-  composerOutline.render();
-  composer.render();
-}
-render();
