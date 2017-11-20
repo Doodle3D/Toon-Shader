@@ -57,7 +57,7 @@ new THREE.TextureLoader().load(matcapURL, matcap => {
     uniforms: {
       "tDiffuse": { value: null },
       "tMatcap": { type: 't', value: null },
-      "color": { type: 'vec3', value: new THREE.Vector3(80, 168, 228).divideScalar(255) },
+      "color": { type: 'vec3', value: new THREE.Vector3().fromArray(new THREE.Color().setHex(0x50a8e4).toArray()) },
       "resolution": { type: 'v2', value: new THREE.Vector2(WIDTH, HEIGHT) }
     },
     vertexShader: edgeVert,
