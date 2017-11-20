@@ -10,6 +10,7 @@ vec3 hsv2rgb(vec3 c) {
   return c.z * mix(K.xxx, clamp(p - K.xxx, 0., 1.), c.y);
 }
 
+// convert depth to hue value so we can detect edges
 vec3 depth(vec4 c) {
   return hsv2rgb(vec3(c.z, 1., 1.)) * c.w;
 }
@@ -40,6 +41,7 @@ vec3 clipColor(vec3 c) {
   }
   return c;
 }
+// color blending from https://www.w3.org/TR/compositing-1/#blendingcolor
 vec3 setLum(vec3 c, float l) {
   float d = l - lum(c);
   c = c + d;
@@ -50,6 +52,7 @@ void main() {
   float x = 1. / resolution.x;
   float y = 1. / resolution.y;
 
+  // lapace filter
   vec4 f01 = texture2D(tDiffuse, vUv + vec2(0., -y));
   vec4 f10 = texture2D(tDiffuse, vUv + vec2(-x, 0.));
   vec4 f11 = texture2D(tDiffuse, vUv);
@@ -63,6 +66,12 @@ void main() {
 
   float edge = normalLaplace + depthLaplace;
 
-  vec3 diffuse = setLum(color, lum(vec3(texture2D(tMatcap, (f11.xy - .5) * .95 + .5))));
-  gl_FragColor = vec4(diffuse - edge, max(edge, f11.w));
+  // matcap color
+  vec4 matcap = texture2D(tMatcap, (f11.xy - .5) * .95 + .5);
+  // gl_FragColor = matcap;
+  // tint matcap grayscale with uniform color
+  vec3 colloredMatcap = setLum(color, lum(vec3(matcap)));
+
+  // combine edge and matcap
+  gl_FragColor = vec4(colloredMatcap - edge, max(edge, f11.w));
 }

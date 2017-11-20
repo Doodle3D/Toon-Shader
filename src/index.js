@@ -21,54 +21,52 @@ document.getElementById('app').style.height = '100%';
 const WIDTH = window.innerWidth;
 const HEIGHT = window.innerHeight;
 
-new THREE.TextureLoader().load(matcapURL, matcap => {
-  const scene = new THREE.Scene();
+const scene = new THREE.Scene();
 
-  // const camera = new THREE.OrthographicCamera(WIDTH * 0.1 / -2, WIDTH * 0.1 / 2, HEIGHT * 0.1 / 2, HEIGHT * 0.1 / -2, 10, 1000);
-  const camera = new THREE.PerspectiveCamera(75, WIDTH / HEIGHT, .1, 1000);
-  camera.position.z = 100;
-  camera.lookAt(new THREE.Vector3(0, 0, 0));
+// const camera = new THREE.OrthographicCamera(WIDTH * 0.1 / -2, WIDTH * 0.1 / 2, HEIGHT * 0.1 / 2, HEIGHT * 0.1 / -2, 10, 1000);
+const camera = new THREE.PerspectiveCamera(75, WIDTH / HEIGHT, .1, 1000);
+camera.position.z = 100;
+camera.lookAt(new THREE.Vector3(0, 0, 0));
 
-  // create gemeometry (test with different geometries)
-  const geometry = new THREE.TorusKnotGeometry(10, 3, 100, 16);
-  // const geometry = new THREE.SphereGeometry(10, 32, 32);
-  // const geometry = new THREE.TorusGeometry(10, 3, 16, 100);
-  // const geometry = new THREE.BoxGeometry(20, 20, 20);
+// create gemeometry (test with different geometries)
+const geometry = new THREE.TorusKnotGeometry(10, 3, 100, 16);
+// const geometry = new THREE.SphereGeometry(10, 32, 32);
+// const geometry = new THREE.TorusGeometry(10, 3, 16, 100);
+// const geometry = new THREE.BoxGeometry(20, 20, 20);
 
-  // create mesh with material and add to scene
-  const mesh = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial());
-  scene.add(mesh);
+// create mesh with material and add to scene
+const mesh = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial());
+scene.add(mesh);
 
-  // creater renderer
-  const renderer = new THREE.WebGLRenderer({ alpha: true, logarithmicDepthBuffer: true, antialias: true });
-  renderer.setClearColor(0xffffff, 0.0);
-  renderer.setSize(WIDTH, HEIGHT);
-  document.getElementById('app').appendChild(renderer.domElement);
+// creater renderer
+const renderer = new THREE.WebGLRenderer({ alpha: true, logarithmicDepthBuffer: true, antialias: true });
+renderer.setClearColor(0xffffff, 0.0);
+renderer.setSize(WIDTH, HEIGHT);
+document.getElementById('app').appendChild(renderer.domElement);
 
-  const composer = new THREE.EffectComposer(renderer);
-  const normalDepthPass = new THREE.RenderPass(scene, camera, new THREE.ShaderMaterial({
-    vertexShader: normalDepthVert,
-    fragmentShader: normalDepthFrag,
-    side: THREE.DoubleSide
-  }));
-  composer.addPass(normalDepthPass);
+const composer = new THREE.EffectComposer(renderer);
+const normalDepthPass = new THREE.RenderPass(scene, camera, new THREE.ShaderMaterial({
+  vertexShader: normalDepthVert,
+  fragmentShader: normalDepthFrag,
+  side: THREE.DoubleSide
+}));
+composer.addPass(normalDepthPass);
 
-  const edgePass = new THREE.ShaderPass({
-    uniforms: {
-      "tDiffuse": { value: null },
-      "tMatcap": { type: 't', value: null },
-      "color": { type: 'vec3', value: new THREE.Vector3().fromArray(new THREE.Color().setHex(0x50a8e4).toArray()) },
-      "resolution": { type: 'v2', value: new THREE.Vector2(WIDTH, HEIGHT) }
-    },
-    vertexShader: edgeVert,
-    fragmentShader: edgeFrag
-  });
-  edgePass.uniforms.tMatcap.value = matcap
-  edgePass.renderToScreen = true;
-  composer.addPass(edgePass);
-
-  const editorControls = new THREE.EditorControls(camera, renderer.domElement);
-  editorControls.addEventListener('change', composer.render.bind(composer));
-
-  composer.render();
+const edgePass = new THREE.ShaderPass({
+  uniforms: {
+    "tDiffuse": { value: null },
+    "tMatcap": { type: 't', value: null },
+    "color": { type: 'vec3', value: new THREE.Vector3().fromArray(new THREE.Color().setHex(0x50a8e4).toArray()) },
+    "resolution": { type: 'v2', value: new THREE.Vector2(WIDTH, HEIGHT) }
+  },
+  vertexShader: edgeVert,
+  fragmentShader: edgeFrag
 });
+edgePass.uniforms.tMatcap.value = new THREE.TextureLoader().load(matcapURL, composer.render.bind(composer));
+edgePass.renderToScreen = true;
+composer.addPass(edgePass);
+
+const editorControls = new THREE.EditorControls(camera, renderer.domElement);
+editorControls.addEventListener('change', composer.render.bind(composer));
+
+composer.render();
