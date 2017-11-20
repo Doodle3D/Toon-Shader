@@ -8,7 +8,7 @@ import normalDepthFrag from 'src/shaders/normal_depth_frag.glsl';
 import normalDepthVert from 'src/shaders/normal_depth_vert.glsl';
 import edgeFrag from 'src/shaders/edge_frag.glsl';
 import edgeVert from 'src/shaders/edge_vert.glsl';
-import matcapURL from 'src/texture/matcap1.png';
+import matcapURL from 'src/texture/matcap.png';
 
 document.body.style.margin = 0;
 document.body.style.padding = 0;
@@ -36,7 +36,7 @@ new THREE.TextureLoader().load(matcapURL, matcap => {
   // const geometry = new THREE.BoxGeometry(20, 20, 20);
 
   // create mesh with material and add to scene
-  const mesh = new THREE.Mesh(geometry);
+  const mesh = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial());
   scene.add(mesh);
 
   // creater renderer
@@ -51,13 +51,13 @@ new THREE.TextureLoader().load(matcapURL, matcap => {
     fragmentShader: normalDepthFrag,
     side: THREE.DoubleSide
   }));
-  // normalDepthPass.renderToScreen = true;
   composer.addPass(normalDepthPass);
 
   const edgePass = new THREE.ShaderPass({
     uniforms: {
       "tDiffuse": { value: null },
       "tMatcap": { type: 't', value: null },
+      "color": { type: 'vec3', value: new THREE.Vector3(80, 168, 228).divideScalar(255) },
       "resolution": { type: 'v2', value: new THREE.Vector2(WIDTH, HEIGHT) }
     },
     vertexShader: edgeVert,
@@ -68,11 +68,7 @@ new THREE.TextureLoader().load(matcapURL, matcap => {
   composer.addPass(edgePass);
 
   const editorControls = new THREE.EditorControls(camera, renderer.domElement);
-  editorControls.addEventListener('change', render);
+  editorControls.addEventListener('change', composer.render.bind(composer));
 
-  function render() {
-    // render both outline and cell
-    composer.render();
-  }
-  render();
+  composer.render();
 });

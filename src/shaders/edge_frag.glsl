@@ -1,5 +1,6 @@
 uniform sampler2D tDiffuse;
 uniform sampler2D tMatcap;
+uniform vec3 color;
 uniform vec2 resolution;
 varying vec2 vUv;
 
@@ -30,6 +31,6 @@ void main() {
 
   float edge = normalLaplace + depthLaplace;
 
-  vec4 color = texture2D(tMatcap, (f11.xy - .5) * .95 + .5);
-  gl_FragColor = vec4(vec3(color) - edge, max(edge, f11.w));
+  vec3 diffuse = vec3(texture2D(tMatcap, (f11.xy - .5) * .95 + .5)) * color;
+  gl_FragColor = vec4(diffuse - edge, max(edge, f11.w));
 }
