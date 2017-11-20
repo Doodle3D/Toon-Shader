@@ -48,6 +48,10 @@ vec3 setLum(vec3 c, float l) {
   return clipColor(c);
 }
 
+float cubicInOut(float t) {
+  return t < .5 ? 4. * pow(t, 3.) : .5 * pow(2. * t - 2., 3.) + 1.;
+}
+
 void main() {
   float x = 1. / resolution.x;
   float y = 1. / resolution.y;
@@ -60,18 +64,16 @@ void main() {
   vec4 f21 = texture2D(tDiffuse, vUv + vec2(x, 0.));
 
   float depthLaplace = length(4. * depth(f11) - depth(f01) - depth(f10) - depth(f12) - depth(f21));
-  if (depthLaplace < .1) depthLaplace = 0.;
   float normalLaplace = length(4. * f11.xy - f01.xy - f10.xy - f12.xy - f21.xy);
-  if (normalLaplace < .1) depthLaplace = 0.;
 
-  float edge = normalLaplace + depthLaplace;
+  float edge = cubicInOut(depthLaplace) + cubicInOut(normalLaplace);
 
   // matcap color
-  vec4 matcap = texture2D(tMatcap, (f11.xy - .5) * .95 + .5);
+  vec4 matcap = texture2D(tMatcap, f11.xy);
   // gl_FragColor = matcap;
   // tint matcap grayscale with uniform color
-  vec3 colloredMatcap = setLum(color, lum(vec3(matcap)));
+  vec3 coloredMatcap = setLum(color, lum(vec3(matcap)));
 
   // combine edge and matcap
-  gl_FragColor = vec4(colloredMatcap - edge, max(edge, f11.w));
+  gl_FragColor = vec4(coloredMatcap - edge, max(edge, f11.w));
 }
