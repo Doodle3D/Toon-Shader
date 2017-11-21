@@ -6,7 +6,7 @@ import OutlinePass from './src/OutlinePass.js';
 document.body.style.margin = 0;
 document.body.style.padding = 0;
 document.body.style.height = '100%';
-document.body.style.backgroundColor = 'lightblue';
+document.body.style.backgroundColor = 'slategrey';
 document.documentElement.style.height = '100%';
 document.documentElement.style.overflow = 'hidden';
 document.getElementById('app').style.height = '100%';
