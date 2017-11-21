@@ -20,5 +20,10 @@ export default class MatcapMaterial extends THREE.ShaderMaterial {
 
   set color(color) {
     this.uniforms.color.value.fromArray(color.toArray());
+    return color;
+  }
+
+  get color() {
+    return new THREE.Color().fromArray(this.uniforms.color.value.toArray());
   }
 }

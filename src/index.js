@@ -35,8 +35,9 @@ const edgeRenderTarget = new THREE.WebGLRenderTarget(WIDTH, HEIGHT);
 const edgeComposer = new THREE.EffectComposer(renderer, edgeRenderTarget);
 
 function render() {
-  edgeComposer.render();
-  composer.render();
+  renderer.render(scene, camera);
+  // edgeComposer.render();
+  // composer.render();
 }
 
 // create scene
@@ -86,16 +87,14 @@ edgeComposer.addPass(edgePass);
 edgeComposer.addPass(new THREE.ShaderPass(THREE.CopyShader));
 
 composer.addPass(new THREE.RenderPass(scene, camera));
-
 const combinePass = new THREE.ShaderPass({
   uniforms: {
     "tDiffuse": { type: 't', value: null },
-    "tEdge": { type: 't', value: null }
+    "uTexArray" : { type: 'tv', value: [edgeRenderTarget.texture] }
   },
   vertexShader: combineVert,
   fragmentShader: combineFrag
 });
-combinePass.uniforms.tEdge.value = edgeRenderTarget.texture;
 combinePass.renderToScreen = true;
 composer.addPass(combinePass);
 

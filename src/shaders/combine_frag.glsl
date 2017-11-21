@@ -1,10 +1,14 @@
 varying vec2 vUv;
 uniform sampler2D tDiffuse;
-uniform sampler2D tEdge;
+uniform sampler2D uTexArray[1];
 
 void main() {
-  vec4 cEdge = texture2D(tEdge, vUv);
   vec4 cDiffuse = texture2D(tDiffuse, vUv);
 
-  gl_FragColor = mix(cDiffuse, cEdge, cEdge.a);
+  for (int i = 0; i < 1; i ++) {
+    vec4 cTex = texture2D(uTexArray[i], vUv);
+    cDiffuse = mix(cDiffuse, cTex, cTex.w);
+  }
+
+  gl_FragColor = cDiffuse;
 }
