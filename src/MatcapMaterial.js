@@ -1,7 +1,7 @@
 import * as THREE from 'three';
-import matcapVert from 'src/shaders/matcap_vert.glsl';
-import matcapFrag from 'src/shaders/matcap_frag.glsl';
-import matcapURL from 'src/texture/matcap.png';
+import matcapVert from '../shaders/matcap_vert.glsl';
+import matcapFrag from '../shaders/matcap_frag.glsl';
+import matcapURL from '../texture/matcap.png';
 
 let matcapTexture;
 export const load = new Promise((resolve, reject) => {

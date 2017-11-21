@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import 'three/examples/js/controls/EditorControls';
-import MatcapMaterial, { load } from 'src/MatcapMaterial.js';
-import OutlinePass from 'src/OutlinePass.js';
+import MatcapMaterial, { load } from './src/MatcapMaterial.js';
+import OutlinePass from './src/OutlinePass.js';
 
 document.body.style.margin = 0;
 document.body.style.padding = 0;

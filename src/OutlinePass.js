@@ -3,12 +3,12 @@ import 'three/examples/js/postprocessing/EffectComposer.js';
 import 'three/examples/js/postprocessing/RenderPass.js';
 import 'three/examples/js/postprocessing/ShaderPass.js';
 import 'three/examples/js/shaders/CopyShader.js';
-import normalDepthVert from 'src/shaders/normal_depth_vert.glsl';
-import normalDepthFrag from 'src/shaders/normal_depth_frag.glsl';
-import edgeVert from 'src/shaders/edge_vert.glsl';
-import edgeFrag from 'src/shaders/edge_frag.glsl';
-import combineVert from 'src/shaders/combine_vert.glsl';
-import combineFrag from 'src/shaders/combine_frag.glsl';
+import normalDepthVert from '../shaders/normal_depth_vert.glsl';
+import normalDepthFrag from '../shaders/normal_depth_frag.glsl';
+import edgeVert from '../shaders/edge_vert.glsl';
+import edgeFrag from '../shaders/edge_frag.glsl';
+import combineVert from '../shaders/combine_vert.glsl';
+import combineFrag from '../shaders/combine_frag.glsl';
 
 export default class OutlinePass {
   constructor(scene, camera) {
