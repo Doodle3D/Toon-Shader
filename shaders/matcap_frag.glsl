@@ -21,12 +21,8 @@ vec3 clipColor(vec3 c) {
   float l = lum(c);
   float n = min(c.r, c.g, c.b);
   float x = max(c.r, c.g, c.b);
-  if (n < 0.) {
-    c = l + (((c - l) * l) / (l - n));
-  }
-  if (x > 1.) {
-    c = l + (((c - l) * (1. - l)) / (x - l));
-  }
+  if (n < 0.) c = l + (((c - l) * l) / (l - n));
+  if (x > 1.) c = l + (((c - l) * (1. - l)) / (x - l));
   return c;
 }
 
