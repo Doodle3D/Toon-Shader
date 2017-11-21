@@ -2,7 +2,11 @@ import * as THREE from 'three';
 import matcapVert from 'src/shaders/matcap_vert.glsl';
 import matcapFrag from 'src/shaders/matcap_frag.glsl';
 import matcapURL from 'src/texture/matcap.png';
-const matcapTexture = new THREE.TextureLoader().load(matcapURL);
+
+let matcapTexture;
+export const load = new Promise((resolve, reject) => {
+  matcapTexture = new THREE.TextureLoader().load(matcapURL, resolve, () => {}, reject);
+});
 
 export default class MatcapMaterial extends THREE.ShaderMaterial {
   constructor({ color = new THREE.Color() }) {

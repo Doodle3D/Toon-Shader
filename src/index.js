@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import 'three/examples/js/controls/EditorControls';
-import MatcapMaterial from 'src/MatcapMaterial.js';
+import MatcapMaterial, { load } from 'src/MatcapMaterial.js';
 import OutlinePass from 'src/OutlinePass.js';
 
 document.body.style.margin = 0;
@@ -46,6 +46,7 @@ const cylinderMeshmesh = new THREE.Mesh(cylinderGeometry, new MatcapMaterial({ c
 scene.add(cylinderMeshmesh);
 cylinderMeshmesh.position.set(45, 0, 0);
 
+// setup composer
 const composer = new THREE.EffectComposer(renderer);
 
 const renderPass = new THREE.RenderPass(scene, camera);
@@ -59,7 +60,9 @@ function render() {
   composer.render();
 }
 
+// setup controls
 const editorControls = new THREE.EditorControls(camera, renderer.domElement);
 editorControls.addEventListener('change', render);
 
-render();
+// render first frame
+load.then(render);
