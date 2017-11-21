@@ -6,22 +6,19 @@ import OutlinePass from 'src/OutlinePass.js';
 document.body.style.margin = 0;
 document.body.style.padding = 0;
 document.body.style.height = '100%';
+document.body.style.backgroundColor = 'lightblue';
 document.documentElement.style.height = '100%';
 document.documentElement.style.overflow = 'hidden';
 document.getElementById('app').style.height = '100%';
 
-const WIDTH = window.innerWidth;
-const HEIGHT = window.innerHeight;
-
 // creater renderer
 const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, preserveDrawingBuffer: true });
 renderer.setClearColor(0xffffff, 0.0);
-renderer.setSize(WIDTH, HEIGHT);
 document.getElementById('app').appendChild(renderer.domElement);
 
 // create scene
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(75, WIDTH / HEIGHT, .1, 1000);
+const camera = new THREE.PerspectiveCamera(75, 1, 1, 1000);
 camera.position.z = 100;
 camera.lookAt(new THREE.Vector3(0, 0, 0));
 
@@ -65,3 +62,19 @@ editorControls.addEventListener('change', render);
 
 // render first frame
 load.then(render);
+
+// set size
+function updateSize() {
+  const width = window.innerWidth;
+  const height = window.innerHeight;
+
+  renderer.setSize(width, height);
+  composer.setSize(width, height);
+
+  camera.aspect = width / height;
+  camera.updateProjectionMatrix();
+
+  render();
+}
+updateSize();
+window.addEventListener('resize', updateSize);
