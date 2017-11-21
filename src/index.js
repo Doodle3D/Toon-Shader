@@ -8,7 +8,6 @@ document.body.style.padding = 0;
 document.body.style.height = '100%';
 document.documentElement.style.height = '100%';
 document.documentElement.style.overflow = 'hidden';
-
 document.getElementById('app').style.height = '100%';
 
 const WIDTH = window.innerWidth;
