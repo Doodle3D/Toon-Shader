@@ -47,6 +47,7 @@ scene.add(cylinderMeshmesh);
 cylinderMeshmesh.position.set(45, 0, 0);
 
 const composer = new THREE.EffectComposer(renderer);
+
 const renderPass = new THREE.RenderPass(scene, camera);
 composer.addPass(renderPass);
 
