@@ -1,5 +1,4 @@
 uniform sampler2D tDiffuse;
-uniform sampler2D tMatcap;
 uniform vec3 color;
 uniform vec2 resolution;
 varying vec2 vUv;
@@ -13,39 +12,6 @@ vec3 hsv2rgb(vec3 c) {
 // convert depth to hue value so we can detect edges
 vec3 depth(vec4 c) {
   return hsv2rgb(vec3(c.z, 1., 1.)) * c.w;
-}
-
-float lum(vec3 c) {
-  return c.r * .3 + c.g * .59 + c.b * .11;
-}
-
-float max(float a, float b, float c) {
-  float maxAB = a > b ? a : b;
-  return maxAB > c ? maxAB : c;
-}
-
-float min(float a, float b, float c) {
-  float minAB = a < b ? a : b;
-  return minAB < c ? minAB : c;
-}
-
-vec3 clipColor(vec3 c) {
-  float l = lum(c);
-  float n = min(c.r, c.g, c.b);
-  float x = max(c.r, c.g, c.b);
-  if (n < 0.) {
-    c = l + (((c - l) * l) / (l - n));
-  }
-  if (x > 1.) {
-    c = l + (((c - l) * (1. - l)) / (x - l));
-  }
-  return c;
-}
-// color blending from https://www.w3.org/TR/compositing-1/#blendingcolor
-vec3 setLum(vec3 c, float l) {
-  float d = l - lum(c);
-  c = c + d;
-  return clipColor(c);
 }
 
 float cubicInOut(float t) {
@@ -68,12 +34,5 @@ void main() {
 
   float edge = cubicInOut(depthLaplace) + cubicInOut(normalLaplace);
 
-  // matcap color
-  vec4 matcap = texture2D(tMatcap, f11.xy);
-  // gl_FragColor = matcap;
-  // tint matcap grayscale with uniform color
-  vec3 coloredMatcap = setLum(color, lum(vec3(matcap)));
-
-  // combine edge and matcap
-  gl_FragColor = vec4(coloredMatcap - edge, max(edge, f11.w));
+  gl_FragColor = vec4(vec3(0.), edge);
 }
