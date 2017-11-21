@@ -29,7 +29,7 @@ export default class OutlinePass {
     this._edgeMaterial = new THREE.ShaderMaterial({
       uniforms: {
         "tDiffuse": { type: 't', value: this._depthNormalRenderTarget.texture },
-        "resolution": { type: 'v2', value: new THREE.Vector2 }
+        "resolution": { type: 'v2', value: new THREE.Vector2() }
       },
       vertexShader: edgeVert,
       fragmentShader: edgeFrag
