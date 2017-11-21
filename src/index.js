@@ -1,16 +1,7 @@
 import * as THREE from 'three';
 import 'three/examples/js/controls/EditorControls';
-import 'three/examples/js/postprocessing/EffectComposer.js';
-import 'three/examples/js/postprocessing/RenderPass.js';
-import 'three/examples/js/postprocessing/ShaderPass.js';
-import 'three/examples/js/shaders/CopyShader.js';
 import MatcapMaterial from 'src/MatcapMaterial.js';
-import normalDepthVert from 'src/shaders/normal_depth_vert.glsl';
-import normalDepthFrag from 'src/shaders/normal_depth_frag.glsl';
-import edgeVert from 'src/shaders/edge_vert.glsl';
-import edgeFrag from 'src/shaders/edge_frag.glsl';
-import combineVert from 'src/shaders/combine_vert.glsl';
-import combineFrag from 'src/shaders/combine_frag.glsl';
+import OutlinePass from 'src/OutlinePass.js';
 
 document.body.style.margin = 0;
 document.body.style.padding = 0;
@@ -28,17 +19,6 @@ const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, preserv
 renderer.setClearColor(0xffffff, 0.0);
 renderer.setSize(WIDTH, HEIGHT);
 document.getElementById('app').appendChild(renderer.domElement);
-
-// create composers
-const composer = new THREE.EffectComposer(renderer);
-const edgeRenderTarget = new THREE.WebGLRenderTarget(WIDTH, HEIGHT);
-const edgeComposer = new THREE.EffectComposer(renderer, edgeRenderTarget);
-
-function render() {
-  renderer.render(scene, camera);
-  // edgeComposer.render();
-  // composer.render();
-}
 
 // create scene
 const scene = new THREE.Scene();
@@ -66,36 +46,19 @@ const cylinderMeshmesh = new THREE.Mesh(cylinderGeometry, new MatcapMaterial({ c
 scene.add(cylinderMeshmesh);
 cylinderMeshmesh.position.set(45, 0, 0);
 
+const composer = new THREE.EffectComposer(renderer);
+const renderPass = new THREE.RenderPass(scene, camera);
+composer.addPass(renderPass);
+
+const outlinePass = new OutlinePass(scene, camera);
+outlinePass.renderToScreen = true;
+composer.addPass(outlinePass);
+
+function render() {
+  composer.render();
+}
+
 const editorControls = new THREE.EditorControls(camera, renderer.domElement);
 editorControls.addEventListener('change', render);
-
-const normalDepthPass = new THREE.RenderPass(scene, camera, new THREE.ShaderMaterial({
-  vertexShader: normalDepthVert,
-  fragmentShader: normalDepthFrag
-}));
-edgeComposer.addPass(normalDepthPass);
-
-const edgePass = new THREE.ShaderPass({
-  uniforms: {
-    "tDiffuse": { type: 't', value: null },
-    "resolution": { type: 'v2', value: new THREE.Vector2(WIDTH, HEIGHT) }
-  },
-  vertexShader: edgeVert,
-  fragmentShader: edgeFrag
-});
-edgeComposer.addPass(edgePass);
-edgeComposer.addPass(new THREE.ShaderPass(THREE.CopyShader));
-
-composer.addPass(new THREE.RenderPass(scene, camera));
-const combinePass = new THREE.ShaderPass({
-  uniforms: {
-    "tDiffuse": { type: 't', value: null },
-    "uTexArray" : { type: 'tv', value: [edgeRenderTarget.texture] }
-  },
-  vertexShader: combineVert,
-  fragmentShader: combineFrag
-});
-combinePass.renderToScreen = true;
-composer.addPass(combinePass);
 
 render();

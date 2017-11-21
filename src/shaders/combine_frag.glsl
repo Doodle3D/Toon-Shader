@@ -8,6 +8,7 @@ void main() {
   for (int i = 0; i < 1; i ++) {
     vec4 cTex = texture2D(uTexArray[i], vUv);
     cDiffuse = mix(cDiffuse, cTex, cTex.w);
+    // cDiffuse = cTex;
   }
 
   gl_FragColor = cDiffuse;
