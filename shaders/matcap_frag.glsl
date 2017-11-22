@@ -1,3 +1,4 @@
+uniform float opacity;
 uniform sampler2D tMatcap;
 uniform vec3 color;
 varying vec2 vNormal;
@@ -24,5 +25,5 @@ vec3 setLum(vec3 c, float l) {
 void main() {
   vec4 matcap = texture2D(tMatcap, vNormal);
   vec3 coloredMatcap = setLum(color, lum(matcap.rgb));
-  gl_FragColor = vec4(coloredMatcap, 1.);
+  gl_FragColor = vec4(coloredMatcap, opacity);
 }

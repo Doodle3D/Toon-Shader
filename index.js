@@ -23,24 +23,32 @@ camera.position.z = 100;
 camera.lookAt(new THREE.Vector3(0, 0, 0));
 
 const torusKnotGeometry = new THREE.TorusKnotGeometry(10, 3, 100, 16);
-const torusKnotMeshmesh = new THREE.Mesh(torusKnotGeometry, new MatcapMaterial({ color: new THREE.Color(0x92c8ef) }));
-scene.add(torusKnotMeshmesh);
-torusKnotMeshmesh.position.set(-45, 0, 0);
+const torusKnotMaterial = new MatcapMaterial({ color: new THREE.Color(0x92c8ef), opacity: 1.0 });
+torusKnotMaterial.transparent = true;
+const torusKnotMesh = new THREE.Mesh(torusKnotGeometry, torusKnotMaterial);
+scene.add(torusKnotMesh);
+torusKnotMesh.position.set(-45, 0, 0);
 
 const torusGeometry = new THREE.TorusGeometry(10, 3, 100, 16);
-const torusMeshmesh = new THREE.Mesh(torusGeometry, new MatcapMaterial({ color: new THREE.Color(0x99cc81) }));
-scene.add(torusMeshmesh);
-torusMeshmesh.position.set(-15, 0, 0);
+const torusMaterial = new MatcapMaterial({ color: new THREE.Color(0x99cc81), opacity: 0.2 });
+torusMaterial.transparent = true;
+const torusMesh = new THREE.Mesh(torusGeometry, torusMaterial);
+scene.add(torusMesh);
+torusMesh.position.set(-15, 0, 0);
 
 const boxGeometry = new THREE.BoxGeometry(20, 20, 20);
-const boxMeshmesh = new THREE.Mesh(boxGeometry, new MatcapMaterial({ color: new THREE.Color(0xf28bb1) }));
-scene.add(boxMeshmesh);
-boxMeshmesh.position.set(15, 0, 0);
+const boxMaterial = new MatcapMaterial({ color: new THREE.Color(0xf28bb1), opacity: 1.0 });
+boxMaterial.transparent = true;
+const boxMesh = new THREE.Mesh(boxGeometry, boxMaterial);
+scene.add(boxMesh);
+boxMesh.position.set(15, 0, 0);
 
 const cylinderGeometry = new THREE.CylinderGeometry(5, 5, 20, 32);
-const cylinderMeshmesh = new THREE.Mesh(cylinderGeometry, new MatcapMaterial({ color: new THREE.Color(0xebea7f) }));
-scene.add(cylinderMeshmesh);
-cylinderMeshmesh.position.set(45, 0, 0);
+const cylinderMaterial = new MatcapMaterial({ color: new THREE.Color(0xebea7f), opacity: 0.8 });
+cylinderMaterial.transparent = true;
+const cylinderMesh = new THREE.Mesh(cylinderGeometry, cylinderMaterial);
+scene.add(cylinderMesh);
+cylinderMesh.position.set(45, 0, 0);
 
 // setup composer
 const composer = new THREE.EffectComposer(renderer);

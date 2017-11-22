@@ -9,9 +9,10 @@ export const load = new Promise((resolve, reject) => {
 });
 
 export default class MatcapMaterial extends THREE.ShaderMaterial {
-  constructor({ color = new THREE.Color() }) {
+  constructor({ color = new THREE.Color(), opacity = 1 }) {
     super({
       uniforms: {
+        "opacity": { type: 'f', value: opacity },
         "tMatcap": { type: 't', value: matcapTexture },
         "color": { type: 'vec3', value: new THREE.Vector3() }
       },
